@@ -5,7 +5,7 @@ export default function LoginPage() {
       <form action="/api/login" method="POST" className="space-y-3">
         <input name="email" defaultValue="test@test.com" placeholder="email" className="w-full border p-2 rounded" />
         <input name="password" defaultValue="test" type="password" placeholder="password" className="w-full border p-2 rounded" />
-        <button className="px-4 py-2 rounded bg-black text-white">Sing in</button>
+        <button className="px-4 py-2 rounded bg-black text-white">Sign in</button>
       </form>
     </main>
   )
