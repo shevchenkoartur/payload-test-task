@@ -3,10 +3,11 @@
 import { getPayloadClient } from '@/lib/payload'
 import { getCurrentUser } from '@/lib/getCurrentUser'
 import { revalidatePath } from 'next/cache'
+import { redirect } from 'next/navigation';
 
 export async function seedCategories() {
   const user = await getCurrentUser()
-  if (!user) throw new Error('Not Authorized')
+  if (!user) redirect('/login')
 
   const payload = await getPayloadClient()
 

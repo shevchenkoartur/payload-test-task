@@ -3,6 +3,7 @@
 import { getPayloadClient } from '@/lib/payload'
 import { getCurrentUser } from '@/lib/getCurrentUser'
 import { revalidatePath } from 'next/cache'
+import { redirect } from 'next/navigation';
 
 function toSlug(s: string) {
   return s
@@ -17,7 +18,7 @@ export async function createPost(formData: FormData) {
   const categories = formData.getAll('categories').map(String).filter(Boolean)
 
   const user = await getCurrentUser()
-  if (!user) throw new Error('Not Authorized')
+  if (!user) redirect('/login')
 
   const payload = await getPayloadClient()
 

@@ -7,16 +7,18 @@ export async function getCurrentUser() {
   const token = cookieStore.get('payload-token')?.value
   if (!token) return null
 
-  const decoded = jwt.decode(token)
-  const userId = typeof decoded === 'object' ? decoded?.id : null
+  const decoded: any = jwt.decode(token)
+  const userId = decoded?.id ?? decoded?.user?.id
   if (!userId) return null
 
   const payload = await getPayloadClient()
-
-  const user = await payload.findByID({
-    collection: 'users',
-    id: userId,
-  })
-
-  return user;
+  try {
+    const user = await payload.findByID({
+      collection: 'users',
+      id: userId,
+    })
+    return user
+  } catch {
+    return null
+  }
 }
