@@ -24,9 +24,9 @@ export default async function Home() {
   return (
     <main className="max-w-2xl mx-auto p-6 space-y-8">
       <h1 className="text-2xl font-semibold">Hello, {user.username}!</h1>
-      <form action="/api/logout" method="POST" className="text-right">
-        <button className="text-sm text-gray-500 hover:text-black underline">Logout</button>
-      </form>
+      <a href="/api/logout" className="text-sm text-gray-500 hover:text-black underline">
+        Logout
+      </a>
       <form action={createPost} className="space-y-4 border p-4 rounded-lg">
         <input name="title" placeholder="Title" className="w-full border p-2 rounded" required />
         <textarea name="content" placeholder="Text" className="w-full border p-2 rounded min-h-[100px]" required />

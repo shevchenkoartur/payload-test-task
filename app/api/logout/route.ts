@@ -9,7 +9,7 @@ function clearCookie(res: NextResponse) {
     path: '/',
     httpOnly: true,
     sameSite: 'lax',
-    secure: true,
+    secure: process.env.NODE_ENV === 'production',
     maxAge: 0,
   })
 }
@@ -24,4 +24,8 @@ export async function GET(request: Request) {
   const res = NextResponse.redirect(new URL('/login', request.url))
   clearCookie(res)
   return res
+}
+
+export async function OPTIONS() {
+  return new Response(null, { status: 204 })
 }
