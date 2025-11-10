@@ -14,8 +14,15 @@ export async function authorizeUser(formData: FormData) {
     data: { email, password },
   })
 
+  if (!token) {
+    throw new Error('Login failed: no token returned')
+  }
+
   const cookieStore = await cookies()
-  cookieStore.set('payload-token', token, {
+
+  cookieStore.set({
+    name: 'payload-token',
+    value: token,
     httpOnly: true,
     path: '/',
     sameSite: 'lax',

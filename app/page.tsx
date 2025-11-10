@@ -12,6 +12,9 @@ export default async function Home() {
   const payload = await getPayloadClient()
 
   const categories = await payload.find({ collection: 'categories', limit: 20 })
+  const catTitleById = new Map(
+    categories.docs.map((c: any) => [c.id as string, c.title as string])
+  )
   const posts = await payload.find({
     collection: 'posts',
     depth: 2,
@@ -21,6 +24,9 @@ export default async function Home() {
   return (
     <main className="max-w-2xl mx-auto p-6 space-y-8">
       <h1 className="text-2xl font-semibold">Hello, {user.username}!</h1>
+      <form action="/api/logout" method="POST" className="text-right">
+        <button className="text-sm text-gray-500 hover:text-black underline">Logout</button>
+      </form>
       <form action={createPost} className="space-y-4 border p-4 rounded-lg">
         <input name="title" placeholder="Title" className="w-full border p-2 rounded" required />
         <textarea name="content" placeholder="Text" className="w-full border p-2 rounded min-h-[100px]" required />
@@ -46,21 +52,32 @@ export default async function Home() {
           <article key={post.id} className="border p-4 rounded">
             <h3 className="text-lg font-semibold">{post.title}</h3>
             <p className="text-gray-700 whitespace-pre-wrap">{post.content}</p>
-            {post.categories?.length > 0 && (
+            {(post.categories?.length ?? 0) > 0 && (
               <p className="text-sm text-gray-500 mt-1">
-                Categories: {post.categories.map((c) => c.title).join(', ')}
+                Categories:{' '}
+                {(post.categories ?? [])
+                  .map((c: any) =>
+                    typeof c === 'string' ? (catTitleById.get(c) ?? c) : c.title
+                  )
+                  .join(', ')}
               </p>
             )}
-            {post.owner && (
-              <p className="text-sm text-gray-400">Author: {post.owner.username}</p>
+            {post.owner && typeof post.owner !== 'string' && (
+              <p className="text-sm text-gray-400">
+                Author: {post.owner.username ?? post.owner.email ?? post.owner.id}
+              </p>
             )}
-            {Array.isArray(post.categories) && post.categories.length > 0 && (
+            {(post.categories?.length ?? 0) > 0 && (
               <div className="mt-2 flex flex-wrap gap-2">
-                {post.categories.map((c: any) => (
-                  <span key={c.id} className="text-xs bg-gray-100 border px-2 py-1 rounded">
-                    {c.title}
-                  </span>
-                ))}
+                {(post.categories ?? []).map((c: any) => {
+                  const id = typeof c === 'string' ? c : c.id
+                  const title = typeof c === 'string' ? (catTitleById.get(c) ?? c) : c.title
+                  return (
+                    <span key={id} className="text-xs bg-gray-100 border px-2 py-1 rounded">
+                      {title}
+                    </span>
+                  )
+                })}
               </div>
             )}
           </article>
